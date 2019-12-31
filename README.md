@@ -1,5 +1,5 @@
 # node-qrcode
-> QR code/2d barcode generator.
+> QR code/2d barcode generator. - Demo https://ccinelli.github.io/qrg
 
 [![Travis](https://img.shields.io/travis/soldair/node-qrcode.svg?style=flat-square)](http://travis-ci.org/soldair/node-qrcode)
 [![npm](https://img.shields.io/npm/v/qrcode.svg?style=flat-square)](https://www.npmjs.com/package/qrcode)

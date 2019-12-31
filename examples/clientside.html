@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>client side test for node-qrcode</title>
+  <title>Open source Pure JS - QR Code generator</title>
+  <meta name=”description” content=”Open source QR Code Generator in pure JS.“>
+
   <!--[if ie]><script type="text/javascript" src="vendors/excanvas/excanvas.js"></script><![endif]-->
   <script src="qrcode.js"></script> <!-- This doesn't exist in the examples, you'll need to supply this. -->
   <script src="qrcode.tosjis.js"></script> <!-- This doesn't exist in the examples, you'll need to supply. -->
@@ -32,6 +34,7 @@
 
     .container {
       display: flex;
+      flex-wrap: wrap;
       margin: 0 auto;
       padding: 16px;
       justify-content: center;
@@ -41,7 +44,6 @@
       flex: 2;
       display: flex;
       flex-direction: column;
-      min-width: 400px;
       max-width: 400px;
     }
 
@@ -88,6 +90,12 @@
     .control>textarea {
       width: 100%;
       flex-grow: 1;
+      margin-bottom: 20px;
+
+      resize: none;
+      overflow: hidden;
+      min-height: 50px;
+      max-height: 100vh;
     }
 
     .expand {
@@ -97,7 +105,7 @@
 </head>
 
 <body>
-  <h1 class="title">node-qrcode</h1>
+  <h1 class="title">qrg - qrcode generator - <a href="https://github.com/ccinelli/qrg">Github source</a></h1>
   <div class="container">
     <div class="controls">
 
@@ -123,16 +131,16 @@
       <div class="control-group">
         <div class="control">
           <label for="margin">Margin:</label>
-          <input id="margin" type="number" name="margin" min="4" value="4" />
+          <input id="margin" type="number" name="margin" min="1" value="2" />
         </div>
         <div class="control">
           <label for="errorLevel">Error Correction:</label>
           <select id="errorLevel" name="errorLevel">
-            <option>Default (Medium)</option>
-            <option>Low</option>
-            <option>Medium</option>
-            <option>Quartile</option>
-            <option>High</option>
+            <option value="M">Default (Medium)</option>
+            <option value="L">Low (~7%)</option>
+            <option value="M">Medium (~15%)</option>
+            <option value="Q">Quartile (~25%)</option>
+            <option value="H">High (~30%)</option>
           </select>
         </div>
       </div>
@@ -151,7 +159,7 @@
       <div class="control-group expand">
         <div class="control">
           <label for="input-text">Text:</label>
-          <textarea id="input-text">https://github.com/soldair/node-qrcode</textarea>
+          <textarea id="input-text" oninput="auto_grow(this)">https://github.com/ccinelli/qrg</textarea>
         </div>
       </div>
     </div>
@@ -172,6 +180,11 @@
     var darkColorEl = document.getElementById('darkColor')
     var canvasEl = document.getElementById('canvas')
     var textEl = document.getElementById('input-text')
+
+    function auto_grow(element) {
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight)+"px";
+    }
 
     function debounce(func, wait, immediate) {
       var timeout
@@ -194,16 +207,18 @@
       errorEl.style.display = 'none'
       canvasEl.style.display = 'block'
 
-      QRCode.toCanvas(canvasEl, text, {
+      var opts =  {
         version: versionEl.value,
-        errorCorrectionLevel: errorLevelEl.options[errorLevelEl.selectedIndex].text,
+        errorCorrectionLevel: errorLevelEl.value,
         margin: marginEl.value,
         color: {
           light: lightColorEl.value,
           dark: darkColorEl.value
         },
         toSJISFunc: QRCode.toSJIS
-      }, function (error, canvas) {
+      };
+
+      QRCode.toCanvas(canvasEl, text, opts, function (error, canvas) {
         if (error) {
           canvasEl.style.display = 'none'
           errorEl.style.display = 'inline'
